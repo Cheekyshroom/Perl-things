@@ -6,6 +6,7 @@ use Curses;
 sub start_display{
 	initscr;
 	noecho;
+	curs_set 0;
 }
 
 sub end_display{
