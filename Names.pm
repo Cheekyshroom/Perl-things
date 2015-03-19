@@ -65,8 +65,27 @@ sub random_name_from_syllable{
 	return $out;
 }
 
+sub name_of_length_from_syllable{
+	my $out = "";
+	my $syllable = $_[0];
+	my $len = $_[1];
+	for (my $i = 0; $i < $len; $i++){
+		$out .= $syllable;
+		my $next_syllable = next_syllable($syllable);
+		until ($next_syllable){
+			$next_syllable = next_syllable($syllable);
+		}
+		$syllable = $next_syllable;
+	}
+	return $out;
+}
+
 sub random_name{
-	return random_name_from_syllable($starting_syllables[int(rand($#starting_syllables+1))]);
+	my $first = $starting_syllables[int(rand($#starting_syllables+1))];
+	if ($#_ == -1){
+		return ucfirst(random_name_from_syllable($first));
+	}
+	return ucfirst(name_of_length_from_syllable($first, $_[0]));
 }
 
 1;
