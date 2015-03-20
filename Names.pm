@@ -32,11 +32,11 @@ my @starting_syllables = @{$ngrams};
 my $syllables = {};
 foreach my $element (@{$ngrams}){
 	#here we have to decide which grams to link this one back to
-	$syllables->{$element} = endwithvowelp($element) ? $starts_with_a_consonant : $starts_with_a_vowel;
+	$syllables->{$element} = endwithvowelp($element) ? $ngrams : $starts_with_a_vowel;
 }
 
 #pad our gram_array with a chance to finish
-for (my $c = 0; $c < 20; $c++){
+for (my $c = 0; $c < 25; $c++){
 	push($ngrams, 0);
 	push($ends_in_a_consonant, 0);
 	push($ends_in_a_vowel, 0);
@@ -72,9 +72,7 @@ sub name_of_length_from_syllable{
 	for (my $i = 0; $i < $len; $i++){
 		$out .= $syllable;
 		my $next_syllable = next_syllable($syllable);
-		until ($next_syllable){
-			$next_syllable = next_syllable($syllable);
-		}
+		$next_syllable = next_syllable($syllable) until $next_syllable;
 		$syllable = $next_syllable;
 	}
 	return $out;
