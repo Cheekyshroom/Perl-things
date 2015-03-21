@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Data::Dumper;
 
-my $digrams = ["al","an","ar","as","at","ea","ed","en","er","es","ha","he","hi","in","is","it","le","me","nd","ne","ng","nt","on","or","ou","re","se","st","te","th","ti","to","ve","wa","th","he","an","er","in","re","nd","ou","en","on","ed","to","it","ha","at","ve","or","as","hi","ar","te","es","ng","is","st","le","al","ti","se","wa","ea","me","nt","ne"];
+my $digrams = ["al","an","ar","as","at","ea","ed","en","er","es","ha","he","hi","in","is","it","le","me","nd","ne","ng","nt","on","or","ou","re","se","st","te","th","ti","to","ve","wa","th","he","an","er","in","re","nd","ou","en","on","ed","to","it","ha","at","ve","or","as","hi","ar","te","es","ng","is","st","le","al","ti","se","wa","ea","me","nt","ne", "pe", "pe"];
 my $trigrams = ["all","and","are","but","ent","era","ere","eve","for","had","hat","hen","her","hin","his","ing","ion","ith","not","ome","oul","our","sho","ted","ter","tha","the","thi","tio","uld","ver","was","wit","you","the","and","ing","her","you","ver","was","hat","not","for","thi","tha","his","ent","ith","ion","ere","wit","all","eve","oul","uld","tio","ter","hen","had","sho","our","hin","era","are","ted","ome","but"];
 my $ngrams = [@{$digrams}, @{$trigrams}];
 
