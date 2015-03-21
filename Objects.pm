@@ -34,6 +34,10 @@ sub parse_object{
 	return {direction=>Consts::PI, speed=>0.0, x=>0, y=>0, symbol=>".", name=>$_[0], id=>$_[1]};
 }
 
+sub new_object{
+	return {x=>$_[0], y=>$_[1], symbol=>$_[2], name=>$_[3], direction=>$_[4], speed=>$_[5], id=>$_[6]};
+}
+
 sub new_object_creator{
 	my $id = 0;
 	return sub {
