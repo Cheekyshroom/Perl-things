@@ -41,7 +41,7 @@ sub new_map{
 	my $height = $_[1];
 	my $modifier = $_[2];
 	my $data = new_2d_array($width, $height, sub{return new_tile();});
-	return {width=>$width, height=>$height, data=>$modifier->($data, $width, $height, @_[3..$#_])};
+	return {width=>$width, height=>$height, data=>$modifier->($data, $width, $height)};
 }
 
 1;
