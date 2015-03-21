@@ -16,16 +16,16 @@ sub display_game{
 
 my $char_inputs = {
 	l=>sub{
-		Console::draw_string("l");
+		$_[0]->{"objects"}->[0]->{"x"}++;
 	},
 	k=>sub{
-		Console::draw_string("k");
+		$_[0]->{"objects"}->[0]->{"y"}--;
 	},
 	j=>sub{
-		Console::draw_string("j");
+		$_[0]->{"objects"}->[0]->{"y"}++;
 	},
 	h=>sub{
-		Console::draw_string("h");
+		$_[0]->{"objects"}->[0]->{"x"}--;
 	},
 	q=>sub{
 		$_[0]->{"continue"} = 0;
