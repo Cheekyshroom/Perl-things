@@ -38,6 +38,26 @@ sub new_object{
 	return {x=>$_[0], y=>$_[1], symbol=>$_[2], name=>$_[3], direction=>$_[4], speed=>$_[5], id=>$_[6]};
 }
 
+sub move_object{
+	my $object = $_[0];
+	$object->{"x"}+=$object->{"speed"}*cos($object->{"direction"});
+	$object->{"y"}+=$object->{"speed"}*sin($object->{"direction"});
+}
+
+sub walk{
+	$_[0]->{"direction"} = $_[1];
+	$_[0]->{"speed"}+=$_[2];
+}
+
+sub step_object{
+	my $object = $_[0];
+	move_object($object);
+	if ($object->{"speed"} != 0){
+		my $a = abs($object->{"speed"})-1;
+		$object->{"speed"} = $object->{"speed"} < 0 ? -$a : $a;
+	}
+}
+
 sub new_object_creator{
 	my $id = 0;
 	return sub {

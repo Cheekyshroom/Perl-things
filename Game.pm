@@ -16,16 +16,22 @@ sub display_game{
 
 my $char_inputs = {
 	l=>sub{
-		$_[0]->{"objects"}->[0]->{"x"}++;
+		Objects::walk($_[0], Consts::RIGHT, 1.0);
 	},
 	k=>sub{
-		$_[0]->{"objects"}->[0]->{"y"}--;
+		Objects::walk($_[0], Consts::UP, 1.0);
 	},
 	j=>sub{
-		$_[0]->{"objects"}->[0]->{"y"}++;
+		Objects::walk($_[0], Consts::DOWN, 1.0);
 	},
 	h=>sub{
-		$_[0]->{"objects"}->[0]->{"x"}--;
+		Objects::walk($_[0], Consts::LEFT, 1.0);
+	},
+	a=>sub{
+		$_[0]->{"objects"}->[0]->{"speed"}+=1.0;
+	},
+	s=>sub{
+		$_[0]->{"objects"}->[0]->{"speed"}-=1.0;
 	},
 	q=>sub{
 		$_[0]->{"continue"} = 0;
@@ -41,27 +47,7 @@ sub handle_input{
 	}
 }
 
-sub run_game{
-	my $game = $_[0];
-	Console::start_display();
-	while (1){
-		display_game($game);
-		handle_input($game, Console::get_char());
-		last unless step_game($game);
-	}
-	Console::end_display();
-}
-
 my @object_symbols = ("a".."z", "A".."Z");
-sub new_obj{
-	return
-		{x=>int(rand(20)),
-		 y=>int(rand(20)),
-		 name=>Names::random_name(3),
-		 symbol=>$object_symbols[int(rand($#object_symbols+1))],
-		 id=>$_[0]};
-}
-
 my $map_width = 40;
 my $map_height = 12;
 sub new_game{
@@ -74,8 +60,9 @@ sub new_game{
 			my $id = 0; #create a new closure, there's probably a better way...
 			return sub{
 				return [map {
-					Objects::new_object(int(rand($map_width)), int(rand($map_height)), 
-						Names::random_name(3), 0.0, 0.0, $id++);
+					Objects::new_object(int(rand($map_width)), int(rand($map_height)),
+						$object_symbols[int(rand($#object_symbols+1))], 
+						Names::random_name(3), Consts::RIGHT, 0.0, $id++);
 					} (1..$_[0])];
 			};
 		}->(),
@@ -98,7 +85,21 @@ sub new_game{
 
 sub step_game{
 	my $game = $_[0];
+	for my $object (@{$game->{"objects"}}){
+		Objects::step_object($object);
+	}
 	return $game->{"continue"};
+}
+
+sub run_game{
+	my $game = $_[0];
+	Console::start_display();
+	while (1){
+		display_game($game);
+		handle_input($game, Console::get_char());
+		last unless step_game($game);
+	}
+	Console::end_display();
 }
 
 1;
