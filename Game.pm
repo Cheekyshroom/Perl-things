@@ -16,16 +16,16 @@ sub display_game{
 
 my $char_inputs = {
 	l=>sub{
-		Objects::walk($_[0], Consts::RIGHT, 1.0);
+		Objects::walk($_[0]->{"objects"}->[0], Consts::RIGHT, 1.0);
 	},
 	k=>sub{
-		Objects::walk($_[0], Consts::UP, 1.0);
+		Objects::walk($_[0]->{"objects"}->[0], Consts::UP, 1.0);
 	},
 	j=>sub{
-		Objects::walk($_[0], Consts::DOWN, 1.0);
+		Objects::walk($_[0]->{"objects"}->[0], Consts::DOWN, 1.0);
 	},
 	h=>sub{
-		Objects::walk($_[0], Consts::LEFT, 1.0);
+		Objects::walk($_[0]->{"objects"}->[0], Consts::LEFT, 1.0);
 	},
 	a=>sub{
 		$_[0]->{"objects"}->[0]->{"speed"}+=1.0;
@@ -79,8 +79,19 @@ sub new_game{
 		},
 	};
 	$game->{"map"} = $game->{"map_creator"}->($map_width, $map_height);
-	$game->{"objects"} = $game->{"object_creator"}->(5);
+	#$game->{"objects"} = $game->{"object_creator"}->(5);
+	add_object($game);
 	return $game;
+}
+
+sub add_object{
+	my $game = $_[0];
+	$game->{"objects"} = $game->{"object_creator"}->(1);
+	return $game->{"objects"}->[$#{$game->{"objects"}}];
+}
+
+sub add_player{
+	
 }
 
 sub step_game{
