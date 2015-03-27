@@ -13,6 +13,10 @@ sub end_display{
 	endwin;
 }
 
+sub refresh_display{
+	refresh;
+}
+
 sub move_cursor{
 	move(@_);
 }
