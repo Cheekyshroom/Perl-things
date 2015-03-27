@@ -3,12 +3,13 @@ use strict;
 use warnings;
 
 sub new_player{
-	return {object=>$_[0], input_sub=>0};
+	return {object=>$_[0], input_sub=>$_[1]};
 }
 
-sub step_player{
+sub input_player{
 	my $player = $_[0];
-	$player->{"input_sub"}->($player->{"object"});
+	my $game = $_[1];
+	$player->{"input_sub"}->($player->{"object"}, $game);
 }
 
 1;
