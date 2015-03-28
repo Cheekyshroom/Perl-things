@@ -78,10 +78,11 @@ sub new_game{
 		}->(),
 		map_creator=>sub{
 			return Map::new_map($_[0], $_[1], sub{
+				my @tiles = ("pusher", "cobblestone", "spikes", "cobblestone", "cobblestone", "cobblestone", "cobblestone");
 				my $m = $_[0];
 				for (my $x = 0; $x < $_[1]; $x++){
 					for (my $y = 0; $y < $_[2]; $y++){
-						$m->[$x][$y] = (int(rand(3)) == 2) ? Map::new_tile_helper("spikes") : Map::new_tile_helper("cobblestone");
+						$m->[$x][$y] = Map::new_tile_helper(@tiles[int(rand($#tiles+1))]);
 					}
 				}
 				return $m;
