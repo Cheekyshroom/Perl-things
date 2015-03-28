@@ -20,11 +20,8 @@ sub display_game{
 	Map::draw_map($game->{"map"});
 	Objects::draw_objects($game->{"objects"});
 
-	#Console::move_cursor($map_height+1, 0);
-	#Console::draw_string(Dumper($game->{"players"}[0]));
-
 	Console::draw_messages(3);
-	Console::draw_turn($game);
+	Console::print_stats($game->{"players"}[0], $game);
 
 	Console::refresh_display();
 }
