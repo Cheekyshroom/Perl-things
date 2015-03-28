@@ -23,7 +23,7 @@ sub new_object($;$;$;$;$;$;$;$){
 	return {x=>$_[0], y=>$_[1], symbol=>$_[2], name=>$_[3], id=>$_[4], health=>$_[5], ap=>$_[6], max_ap=>$_[6], direction=>$_[7]};
 }
 
-sub move_object{
+sub move{
 	my $object = $_[0];
 	$object->{"x"}+=$object->{"direction"}->[0];
 	$object->{"y"}+=$object->{"direction"}->[1];
@@ -40,7 +40,7 @@ sub damage{
 sub step_object{
 	my $object = $_[0];
 	my $map = $_[1];
-	move_object($object, $map);
+	move($object, $map);
 	Map::activate_on_step($object, $map);
 }
 
