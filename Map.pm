@@ -46,6 +46,15 @@ my $tile_types = {
 	default=>sub{
 		return new_tile(' ', 0, 0, 1);
 	},
+	pusher=>sub{
+		return new_tile('?',
+			sub{
+				my $object = $_[0];
+				my $map = $_[1];
+				Objects::walk($object, [int(rand(3))-1, int(rand(3))-1]);
+				Objects::move($object);
+			}, 0, 1);
+	},
 };
 
 sub new_tile_from_type{
