@@ -10,41 +10,40 @@ use Map;
 use Names;
 use Data::Dumper;
 
-my $map_width = 40;
-my $map_height = 20;
+my $map_width = Consts::MAP_DISPLAY_WIDTH;
+my $map_height = Consts::MAP_DISPLAY_HEIGHT;
 
 sub display_game{
 	my $game = $_[0];
 	Console::clear_display();
-	#if (0){
+
 	Map::draw_map($game->{"map"});
 	Objects::draw_objects($game->{"objects"});
-	Console::move_cursor($map_height, 0);
-	Console::draw_string($game->{"turn"}++);
-	#}
-	Console::move_cursor($map_height+1, 0);
-	Console::draw_string(Dumper($game->{"players"}[0]));
+
+	#Console::move_cursor($map_height+1, 0);
+	#Console::draw_string(Dumper($game->{"players"}[0]));
+
+	Console::draw_messages(3);
+	Console::draw_turn($game);
+
 	Console::refresh_display();
 }
 
 my $char_inputs = {
 	l=>sub{
-		Objects::walk($_[0], Consts::RIGHT, 1.0);
+		Objects::walk($_[0], [1,0]);
 	},
 	k=>sub{
-		Objects::walk($_[0], Consts::UP, 1.0);
+		Objects::walk($_[0], [0,-1]);
 	},
 	j=>sub{
-		Objects::walk($_[0], Consts::DOWN, 1.0);
+		Objects::walk($_[0], [0,1]);
 	},
 	h=>sub{
-		Objects::walk($_[0], Consts::LEFT, 1.0);
+		Objects::walk($_[0], [-1,0]);
 	},
-	a=>sub{
-		$_[0]->{"speed"}+=1.5;
-	},
-	s=>sub{
-		$_[0]->{"speed"}-=1.5;
+	'.'=>sub{
+		Objects::walk($_[0], [0,0]);
 	},
 	q=>sub{
 		$_[1]->{"continue"} = 0;
@@ -75,7 +74,8 @@ sub new_game{
 				return [map {
 					Objects::new_object(int(rand($map_width)), int(rand($map_height)),
 						$object_symbols[int(rand($#object_symbols+1))], 
-						Names::random_name(3), Consts::RIGHT, 0.0, $id++, int(rand(17))+3);
+						Names::random_name(3), $id++, int(rand(17))+3,
+						int(rand(2))+1, [0,0]);
 					} (1..$_[0])];
 			};
 		}->(),
@@ -84,7 +84,7 @@ sub new_game{
 				my $m = $_[0];
 				for (my $x = 0; $x < $_[1]; $x++){
 					for (my $y = 0; $y < $_[2]; $y++){
-						$m->[$x][$y]->{"symbol"} = '.';
+						$m->[$x][$y] = (int(rand(3)) == 2) ? Map::new_tile_helper("spikes") : Map::new_tile_helper("cobblestone");
 					}
 				}
 				return $m;
@@ -123,6 +123,7 @@ sub step_game{
 	for my $object (@{$game->{"objects"}}){
 		Objects::step_object($object, $game->{"map"});
 	}
+	$game->{"turn"}++;
 	return $game->{"continue"};
 }
 
