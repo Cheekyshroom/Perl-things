@@ -52,10 +52,31 @@ sub draw_messages{
 	}
 }
 
+sub pluralize_string{
+	my $str = $_[0];
+	my $amount = $_[1];
+	return sprintf($str, ($amount == 1 ? "" : "s"));
+}
+
 sub draw_turn{
 	my $game = $_[0];
 	move_cursor(Consts::MAP_DISPLAY_HEIGHT, 0);
-	draw_string($game->{"turn"});
+	draw_string("on turn ".$game->{"turn"});
+}
+
+sub status_line{
+	return sprintf("%d health | on turn %d", @_);
+}
+
+sub print_stats{
+	my $player = $_[0];
+	my $game = $_[1];
+	if (!$player){
+		draw_turn($game);
+	} else {
+		move_cursor(Consts::MAP_DISPLAY_HEIGHT, 0);
+		draw_string(status_line($player->{"object"}->{"health"}, $game->{"turn"}));
+	}
 }
 
 1;
