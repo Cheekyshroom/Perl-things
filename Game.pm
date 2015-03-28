@@ -86,18 +86,15 @@ sub new_game{
 			});
 		},
 		player_input_sub=>sub{
-			return sub{
-				my $player = $_[0];
-				my $game = $_[1];
-				my $input = Console::get_char;
-				handle_input($game, $player->{"object"}, $input);
-			};
+			my $player = $_[0];
+			my $game = $_[1];
+			my $input = Console::get_char;
+			handle_input($game, $player, $input);
 		},
 	};
 	$game->{"map"} = $game->{"map_creator"}->($map_width, $map_height);
-	#add_object($game);
-	#add_object($game);
-	#add_object($game);
+	add_object($game);
+	add_object($game);
 	add_player($game);
 	return $game;
 }
