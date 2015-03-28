@@ -2,6 +2,8 @@ package Console;
 use strict;
 use warnings;
 use Curses;
+use Consts;
+use Data::Dumper;
 
 sub start_display{
 	initscr;
@@ -35,6 +37,25 @@ sub get_char{
 
 sub clear_display{
 	erase;
+}
+
+my $messages = [];
+sub message{
+	unshift($messages, $_[0]);
+}
+sub draw_messages{
+	my $amount = $_[0];
+	for (my $i = 0; $i < $amount; $i++){
+		move_cursor(1+Consts::MAP_DISPLAY_HEIGHT+$i, 0);
+		last if !$messages->[$i];
+		draw_string($messages->[$i]);
+	}
+}
+
+sub draw_turn{
+	my $game = $_[0];
+	move_cursor(Consts::MAP_DISPLAY_HEIGHT, 0);
+	draw_string($game->{"turn"});
 }
 
 1;
