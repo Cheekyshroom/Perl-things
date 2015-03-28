@@ -35,13 +35,20 @@ sub parse_object{
 }
 
 sub new_object{
-	return {x=>$_[0], y=>$_[1], symbol=>$_[2], name=>$_[3], direction=>$_[4], speed=>$_[5], id=>$_[6]};
+	return {x=>$_[0], y=>$_[1], symbol=>$_[2], name=>$_[3], direction=>$_[4], speed=>$_[5], id=>$_[6], health=>$_[7]};
 }
 
 sub move_object{
 	my $object = $_[0];
 	$object->{"x"}+=$object->{"speed"}*cos($object->{"direction"});
 	$object->{"y"}+=$object->{"speed"}*sin($object->{"direction"});
+}
+
+sub update_speed{
+	my $object = $_[0];
+	my $map = $_[1];
+	$object->{"speed"} *= $map->{"data"}->[$object->{"x"}][$object->{"y"}]->{"friction_coefficient"};
+	$object->{"speed"} = 0.0 if abs($object->{"speed"})<Consts::FRICTION_THRESHOLD;
 }
 
 sub walk{
@@ -51,31 +58,9 @@ sub walk{
 
 sub step_object{
 	my $object = $_[0];
-	move_object($object);
-	if ($object->{"speed"} != 0){
-		my $a = abs($object->{"speed"})-1;
-		$object->{"speed"} = $object->{"speed"} < 0 ? -$a : $a;
-	}
-}
-
-sub new_object_creator{
-	my $id = 0;
-	return sub {
-		#if we're using a string
-		if ($#_ == 0){
-			return parse_object($_[0], $id++);
-		}
-		#if we're using a subroutine
-		if ($#_ == 1){
-			return $_[0]->($id++, @{$_[1]});
-		}
-		#if we're explicitly stating all but direction and speed
-		if ($#_ < 4){
-			return {x=>$_[0], y=>$_[1], symbol=>$_[2], name=>$_[3], direction=>0.0, speed=>0.0, id=>$id++};
-		}
-		#if everything's explicit
-		return {x=>$_[0], y=>$_[1], symbol=>$_[2], name=>$_[3], direction=>$_[4], speed=>$_[5], id=>$id++};
-	}
+	my $map = $_[1];
+	move_object($object, $map);
+	update_speed($object, $map);
 }
 
 1;
