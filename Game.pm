@@ -8,17 +8,22 @@ use Objects;
 use Players;
 use Map;
 use Names;
+use Data::Dumper;
 
-my $map_width = 4;
-my $map_height = 4;
+my $map_width = 40;
+my $map_height = 20;
 
 sub display_game{
 	my $game = $_[0];
 	Console::clear_display();
+	#if (0){
 	Map::draw_map($game->{"map"});
 	Objects::draw_objects($game->{"objects"});
+	Console::move_cursor($map_height, 0);
+	Console::draw_string($game->{"turn"}++);
+	#}
 	Console::move_cursor($map_height+1, 0);
-	Console::draw_string("".$game->{"turn"}++);
+	Console::draw_string(Dumper($game->{"players"}[0]));
 	Console::refresh_display();
 }
 
@@ -36,10 +41,10 @@ my $char_inputs = {
 		Objects::walk($_[0], Consts::LEFT, 1.0);
 	},
 	a=>sub{
-		$_[0]->{"speed"}+=1.0;
+		$_[0]->{"speed"}+=1.5;
 	},
 	s=>sub{
-		$_[0]->{"speed"}-=1.0;
+		$_[0]->{"speed"}-=1.5;
 	},
 	q=>sub{
 		$_[1]->{"continue"} = 0;
@@ -70,7 +75,7 @@ sub new_game{
 				return [map {
 					Objects::new_object(int(rand($map_width)), int(rand($map_height)),
 						$object_symbols[int(rand($#object_symbols+1))], 
-						Names::random_name(3), Consts::RIGHT, 0.0, $id++);
+						Names::random_name(3), Consts::RIGHT, 0.0, $id++, int(rand(17))+3);
 					} (1..$_[0])];
 			};
 		}->(),
@@ -116,7 +121,7 @@ sub step_game{
 		Players::input_player($player, $game);
 	}
 	for my $object (@{$game->{"objects"}}){
-		Objects::step_object($object);
+		Objects::step_object($object, $game->{"map"});
 	}
 	return $game->{"continue"};
 }
