@@ -17,43 +17,49 @@ sub new_2d_array{
 	return \@out;
 }
 
-sub new_tile{
-	return {symbol=>$_[0], on_step=>$_[1], on_update=>$_[2], friction_coefficient=>$_[3], passable=>$_[4]};
+sub new_tile($;$;$;$){
+	return {symbol=>$_[0], on_step=>$_[1], on_update=>$_[2], passable=>$_[3]};
 }
 
 my $tile_types = {
-	cobblestone=>
-		new_tile('.', 0, 0, Consts::FRICTION_DEFAULT, 1),
-	wall=>
-		new_tile('#', 0, 0, 0.0, 0),
-	sand=>
-		new_tile('~', 0, 0, 0.05, 1),
-	mud=>
-		new_tile('%', 0, 0, 0.01, 1),
-	spikes=>
-		new_tile('^',
+	cobblestone=>sub{
+		return new_tile('.', 0, 0, 1);
+	},
+	wall=>sub{
+		return new_tile('#', 0, 0, 0);
+	},
+	sand=>sub{
+		return new_tile('~', 0, 0, 1);
+	},
+	mud=>sub{
+		return new_tile('%', 0, 0, 1);
+	},
+	spikes=>sub{
+		return new_tile('^',
 			sub{
 				my $object = $_[0];
 				my $map = $_[1];
 				Objects::damage($object, 3);
-				Console::message($object->{"name"}." got damaged for 3 damage");
-			},
-			0,
-			Consts::FRICTION_DEFAULT, 1),
+				Console::message($object->{"name"}." got damaged for 3 damage!");
+			}, 0, 1);
+	},
+	default=>sub{
+		return new_tile(' ', 0, 0, 1);
+	},
 };
 
 sub new_tile_from_type{
-	return new_tile('.', 0, 0, 0.3) if $_[0] eq "tile";
-	return new_tile('.', 0, 0, 0.3) if $_[0] eq "wall";
-	return new_tile('.', 0, 0, 0.3) if $_[0] eq "sand";
-	return new_tile('.', 0, 0, 0.3) if $_[0] eq "mud";
-	return new_tile('.', 0, 0, 0.3) if $_[0] eq "spikes";
+	my $tile = $tile_types->{$_[0]};
+	if ($tile){
+		return $tile->();
+	}
+	return $tile_types->{"default"}->();
 }
 
 sub new_tile_helper{
 	return new_tile_from_type($_[0]) if $#_ == 0;
-	return new_tile($_[0], $_[1], $_[2], $_[3], $_[4]) if $#_ == 5;
-	return new_tile(' ', 0, 0, 0.3, 1);
+	return new_tile($_[0], $_[1], $_[2], $_[3]) if $#_ == 4;
+	return new_tile(' ', 0, 0, 1);
 }
 
 sub draw_map{
@@ -75,6 +81,15 @@ sub new_map{
 	my $modifier = $_[2];
 	my $data = new_2d_array($width, $height, sub{return new_tile_helper();});
 	return {width=>$width, height=>$height, data=>$modifier->($data, $width, $height)};
+}
+
+sub activate_on_step{
+	my $object = $_[0];
+	my $map = $_[1];
+	my $onstep = $map->{"data"}->[$object->{"x"}][$object->{"y"}]->{"on_step"};
+	if ($onstep){
+		$onstep->($object, $map);
+	}
 }
 
 1;
