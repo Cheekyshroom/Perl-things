@@ -8,18 +8,18 @@ use Map;
 
 #may as well just store the ref in an object but maybe this copies it?
 sub draw_object{
-	my $oref = $_[0];
-	if ($oref->{"alive"}){
-		Console::draw_char($oref->{"y"}, $oref->{"x"}, $oref->{"symbol"});
+	my $object = $_[0];
+	if ($object->{"alive"}){
+		Console::draw_char($object->{"y"}, $object->{"x"}, $object->{"symbol"});
 	} else {
-		Console::draw_char($oref->{"y"}, $oref->{"x"}, $oref->{"dead_symbol"});
+		Console::draw_char($object->{"y"}, $object->{"x"}, $object->{"dead_symbol"});
 	}
 }
 
 sub draw_objects{
 	my @objects = @{$_[0]};
-	foreach my $oref (@objects){
-		draw_object $oref;
+	foreach my $object (@objects){
+		draw_object $object;
 	}
 }
 
@@ -41,9 +41,14 @@ sub new_object($;$;$;$;$;$;$;$;$;$){
 
 sub move{
 	my $object = $_[0];
+	my $map = $_[1];
 	if ($object->{"alive"}){
-		$object->{"x"}+=$object->{"direction"}->[0];
-		$object->{"y"}+=$object->{"direction"}->[1];
+		my $nx = $object->{"x"}+$object->{"direction"}->[0];
+		my $ny = $object->{"y"}+$object->{"direction"}->[1];
+		if (Map::in_bounds($map, $nx, $ny)){
+			$object->{"x"} = $nx;
+			$object->{"y"} = $ny;
+		}
 	}
 }
 
@@ -65,6 +70,7 @@ sub step_object{
 		my $map = $_[1];
 		move($object, $map);
 		Map::activate_on_step($object, $map);
+		#walk($object, [0,0]);
 	}
 }
 
