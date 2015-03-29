@@ -23,6 +23,8 @@ sub display_game{
 	Console::draw_messages(3);
 	Console::print_stats($game->{"players"}[0], $game);
 
+	Console::move_cursor(50, 0);
+
 	Console::refresh_display();
 }
 
@@ -40,7 +42,8 @@ my $char_inputs = {
 		Objects::walk($_[0], [-1,0]);
 	},
 	'.'=>sub{
-		Objects::walk($_[0], [0,0]);
+		#Objects::walk($_[0], [0,0]);
+		return;
 	},
 	q=>sub{
 		$_[1]->{"continue"} = 0;
