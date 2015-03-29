@@ -66,7 +66,7 @@ sub object_creator_from_string{
 					Objects::new_object(int(rand($map_width)), int(rand($map_height)),
 						$object_symbols[int(rand($#object_symbols+1))], 
 						Names::random_name(3), $id++, int(rand(17))+3,
-						int(rand(2))+1, [0,0]);
+						int(rand(2))+1, [0,0], 1, 'X');
 					} (1..$_[0])];
 			};
 		}->() if $_[0] eq "random";
