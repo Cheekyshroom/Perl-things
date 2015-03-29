@@ -57,15 +57,9 @@ sub handle_input{
 	}
 }
 
-my @object_symbols = ("a".."z", "A".."Z");
-sub new_game{
-	my $game = {
-		continue=>1,
-		turn=>0,
-		objects=>[],
-		map=>[[]],
-		players=>[],
-		object_creator=>sub{
+sub object_creator_from_string{
+	return sub{
+			my @object_symbols = ("a".."z", "A".."Z");
 			my $id = 0; #create a new closure, there's probably a better way...
 			return sub{
 				return [map {
@@ -75,10 +69,17 @@ sub new_game{
 						int(rand(2))+1, [0,0]);
 					} (1..$_[0])];
 			};
-		}->(),
-		map_creator=>sub{
+		}->() if $_[0] eq "random";
+}
+
+sub map_creator_from_string{
+	return sub{
 			return Map::new_map($_[0], $_[1], sub{
-				my @tiles = ("pusher", "cobblestone", "spikes", "cobblestone", "cobblestone", "cobblestone", "cobblestone");
+				my @tiles = (
+					"cobblestone", "cobblestone", "pusher",
+					"cobblestone", "spikes", "cobblestone",
+					"cobblestone", "cobblestone", "cobblestone"
+				);
 				my $m = $_[0];
 				for (my $x = 0; $x < $_[1]; $x++){
 					for (my $y = 0; $y < $_[2]; $y++){
@@ -87,13 +88,31 @@ sub new_game{
 				}
 				return $m;
 			});
-		},
-		player_input_sub=>sub{
+		} if $_[0] eq "random";
+}
+
+sub player_input_handler_from_string{
+	return sub{
 			my $player = $_[0];
 			my $game = $_[1];
 			my $input = Console::get_char;
 			handle_input($game, $player, $input);
-		},
+		} if $_[0] eq "console";
+}
+
+sub new_game{
+	my $object_mode = $_[0];
+	my $map_mode = $_[1];
+	my $player_input_mode = $_[2];
+	my $game = {
+		continue=>1,
+		turn=>0,
+		objects=>[],
+		map=>[[]],
+		players=>[],
+		object_creator=>object_creator_from_string($object_mode),
+		map_creator=>map_creator_from_string($map_mode),
+		player_input_sub=>player_input_handler_from_string($player_input_mode),
 	};
 	$game->{"map"} = $game->{"map_creator"}->($map_width, $map_height);
 	add_object($game);
