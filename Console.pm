@@ -79,4 +79,10 @@ sub print_stats{
 	}
 }
 
+sub log{
+	open(my $logfile, ">>", "log.txt");
+	print({$logfile} $_[0], "\n");
+	close($logfile);
+}
+
 1;
