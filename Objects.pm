@@ -59,6 +59,8 @@ sub damage{
 
 sub step_object{
 	my $object = $_[0];
+	#objects can come back to life!
+	$object->{"alive"} = $object->{"health"} <= 0 ? 0 : 1;
 	if ($object->{"alive"}){
 		my $map = $_[1];
 		move($object, $map);
