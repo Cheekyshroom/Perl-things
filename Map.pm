@@ -4,6 +4,7 @@ package Map;
 use Console;
 use Consts;
 use Objects;
+use Data::Dumper;
 
 sub new_2d_array{
 	my @out;
@@ -57,7 +58,7 @@ my $tile_types = {
 				my $object = $_[0];
 				my $map = $_[1];
 				Objects::walk($object, [int(rand(3))-1, int(rand(3))-1]);
-				Objects::move($object);
+				Objects::move($object, $map);
 			}, 0, 1);
 	},
 };
@@ -103,7 +104,16 @@ sub activate_on_step{
 	my $onstep = $map->{"data"}->[$object->{"x"}][$object->{"y"}]->{"on_step"};
 	if ($onstep){
 		$onstep->($object, $map);
+	} else {
+		Objects::walk($object, [0,0]);
 	}
+}
+
+sub in_bounds{
+	my $map = $_[0];
+	my $x = $_[1];
+	my $y = $_[2];
+	return !($x < 0 || $y < 0 || $x >= $map->{"width"} || $y >= $map->{"height"});
 }
 
 1;
