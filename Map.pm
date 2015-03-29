@@ -18,7 +18,12 @@ sub new_2d_array{
 }
 
 sub new_tile($;$;$;$){
-	return {symbol=>$_[0], on_step=>$_[1], on_update=>$_[2], passable=>$_[3]};
+	return {
+		symbol=>$_[0],
+		on_step=>$_[1],
+		on_update=>$_[2],
+		passable=>$_[3]
+	};
 }
 
 my $tile_types = {
