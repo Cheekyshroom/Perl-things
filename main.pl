@@ -2,7 +2,9 @@
 use strict; 
 use warnings;
 use Game;
-#use Data::Dumper;
+use Data::Dumper;
 
-my $game = Game::new_game();
-Game::run_game($game);
+my $run = shift(@ARGV);
+my $game = Game::new_game("random", "random", "console");
+print Dumper($game) if !$run;
+Game::run_game($game) if $run;
