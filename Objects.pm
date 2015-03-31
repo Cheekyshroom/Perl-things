@@ -23,19 +23,28 @@ sub draw_objects{
 	}
 }
 
-sub new_object($;$;$;$;$;$;$;$;$;$){
+sub new_object($;$;$;$;$;$;$;$;$;$;$){
 	return {
-		x=>$_[0],
-		y=>$_[1],
-		symbol=>$_[2],	
-		name=>$_[3],
 		id=>$_[4],
-		health=>$_[5],
-		ap=>$_[6], 
-		max_ap=>$_[6], 
-		direction=>$_[7], 
-		alive=>$_[8], 
-		dead_symbol=>$_[9],
+		#movement_info=>{
+			x=>$_[0],
+			y=>$_[1],
+			direction=>$_[7], 
+		#},
+		#display_info=>{
+			symbol=>$_[2],	
+			dead_symbol=>$_[9],
+			name=>$_[3],
+		#},
+		#life_info=>{
+			health=>$_[5],
+			ap=>$_[6], 
+			max_ap=>$_[6], 
+			alive=>$_[8], 
+		#},
+		#status_info=>{
+			immobile=>$_[10],
+		#},
 	};
 }
 
@@ -70,7 +79,6 @@ sub step_object{
 		my $map = $_[1];
 		move($object, $map);
 		Map::activate_on_step($object, $map);
-		#walk($object, [0,0]);
 	}
 }
 
