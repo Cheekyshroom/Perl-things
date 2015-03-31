@@ -28,8 +28,22 @@ sub new_tile($;$;$;$){
 }
 
 my $tile_types = {
+	ice=>sub{
+		return new_tile('*',
+			sub{
+				my $object = $_[0];
+				my $map = $_[1];
+				$object->{"immobile"} = 1;
+			}, 0, 1);
+	},
 	cobblestone=>sub{
-		return new_tile('.', 0, 0, 1);
+		return new_tile('.',
+			sub{
+				my $object = $_[0];
+				my $map = $_[1];
+				$object->{"immobile"} = 0;
+				Objects::walk($object, [0,0]);
+			}, 0, 1);
 	},
 	wall=>sub{
 		return new_tile('#', 0, 0, 0);
@@ -47,6 +61,7 @@ my $tile_types = {
 				my $map = $_[1];
 				Objects::damage($object, 3);
 				Console::message($object->{"name"}." got damaged for 3 damage!");
+				Objects::walk($object, [0,0]);
 			}, 0, 1);
 	},
 	default=>sub{
