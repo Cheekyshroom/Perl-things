@@ -30,16 +30,24 @@ sub display_game{
 
 my $char_inputs = {
 	l=>sub{
-		Objects::walk($_[0], [1,0]);
+		unless ($_[0]->{"immobile"}){
+			Objects::walk($_[0], [1,0]);
+		}
 	},
 	k=>sub{
-		Objects::walk($_[0], [0,-1]);
+		unless ($_[0]->{"immobile"}){
+			Objects::walk($_[0], [0,-1]);
+		}
 	},
 	j=>sub{
-		Objects::walk($_[0], [0,1]);
+		unless ($_[0]->{"immobile"}){
+			Objects::walk($_[0], [0,1]);
+		}
 	},
 	h=>sub{
-		Objects::walk($_[0], [-1,0]);
+		unless ($_[0]->{"immobile"}){
+			Objects::walk($_[0], [-1,0]);
+		}
 	},
 	'.'=>sub{
 		#Objects::walk($_[0], [0,0]);
@@ -81,12 +89,20 @@ sub map_creator_from_string{
 				my @tiles = (
 					"cobblestone", "cobblestone", "pusher",
 					"cobblestone", "spikes", "cobblestone",
-					"cobblestone", "cobblestone", "cobblestone"
+					"cobblestone", "cobblestone", "cobblestone",
+					"ice", "ice", "ice",
+					"ice", "ice", "ice",
+					"ice", "ice", "ice",
+					"ice", "ice", "ice",
 				);
 				my $m = $_[0];
 				for (my $x = 0; $x < $_[1]; $x++){
 					for (my $y = 0; $y < $_[2]; $y++){
-						$m->[$x][$y] = Map::new_tile_helper(@tiles[int(rand($#tiles+1))]);
+						if ($y == $_[2]-1 || $x == $_[1]-1 || $x == 0 || $y == 0){
+							$m->[$x][$y] = Map::new_tile_helper("cobblestone");
+						} else {
+							$m->[$x][$y] = Map::new_tile_helper(@tiles[int(rand($#tiles+1))]);
+						}
 					}
 				}
 				return $m;
