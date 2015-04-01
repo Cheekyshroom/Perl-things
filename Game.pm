@@ -29,33 +29,24 @@ sub display_game{
 }
 
 my $char_inputs = {
-	l=>sub{
-		unless ($_[0]->{"immobile"}){
+	l=>[sub{
 			Objects::walk($_[0], [1,0]);
-		}
-	},
-	k=>sub{
-		unless ($_[0]->{"immobile"}){
+	    }, 1],
+	k=>[sub{
 			Objects::walk($_[0], [0,-1]);
-		}
-	},
-	j=>sub{
-		unless ($_[0]->{"immobile"}){
+		 }, 1],
+	j=>[sub{
 			Objects::walk($_[0], [0,1]);
-		}
-	},
-	h=>sub{
-		unless ($_[0]->{"immobile"}){
+	    }, 1],
+	h=>[sub{
 			Objects::walk($_[0], [-1,0]);
-		}
-	},
-	'.'=>sub{
-		#Objects::walk($_[0], [0,0]);
-		return;
-	},
-	q=>sub{
-		$_[1]->{"continue"} = 0;
-	},
+		 }, 1],
+	'.'=>[sub{
+  			return;
+			}, 0],
+	q=>[sub{
+			$_[1]->{"continue"} = 0;
+		 }, 0],
 };
 
 sub handle_input{
@@ -158,6 +149,9 @@ sub step_game{
 	}
 	for my $object (@{$game->{"objects"}}){
 		Objects::step_object($object, $game->{"map"});
+	}
+	for my $player (@{$game->{"players"}}){
+		$player->{"ap"} = $player->{"max_ap"};
 	}
 	$game->{"turn"}++;
 	return $game->{"continue"};
